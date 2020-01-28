@@ -24,6 +24,7 @@ I acknowledge that there are a number of flaws and limitations in my approach be
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(fuzzyjoin)
+library(feather)
 library(synapser)
 source("../R/baseline_annotator.R")
 source("../R/scoring.R")
@@ -70,13 +71,13 @@ Let's look at an example with a single DE (`2192199` for `"Race Category Text"`)
 ```{r}
 syn_str <- cadsr_df %>% 
   dplyr::filter(CDE_ID == "2192199") %>% 
-  dplyr::select(CDE_SYNONYMS_MACHINE) %>%
+  dplyr::select(CDE_SHORT_NAME) %>%
   purrr::flatten_chr()
 
 syn_str
 ```
 
-Based on the description of the **`CDE_SYNONYMS_MACHINE`** column on the [**Reference Standards** page](https://www.synapse.org/#!Synapse:syn18065892/wiki/599381), I can figure out what the various pieces of this string represent:
+Based on the description of the **`CDE_SHORT_NAME`** column on the [**Reference Standards** page](https://www.synapse.org/#!Synapse:syn18065892/wiki/599381), I can figure out what the various pieces of this string represent:
 
 > Collection of CDE short name and *all* computer-friendly alternate names. The names in the collection are pipe-delimited.
 
@@ -257,7 +258,7 @@ demo_col_ov <- get_col_ov(input_df, demo_col_num)
 head(demo_col_ov)
 ```
 
-Like the column headers, curators have also annotated row values according to standard vocabularies, based on the object and property concepts of the matched DE (**`OBJECT_CLASS_IDS`** and **`PROPERTY_IDS`** columns in the caDSR table, respectively).
+Like the column headers, curators have also annotated row values according to standard vocabularies, based on the object and property concepts of the matched DE (**`OBJECT_CLASS_CONCEPTS`** and **`PROPERTY_CONCEPTS`** columns in the caDSR table, respectively).
 
 ```{r,}
 anno_res_ov <- anno_res_data$observedValues

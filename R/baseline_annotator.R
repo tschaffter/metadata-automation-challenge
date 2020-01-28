@@ -10,16 +10,16 @@ str_trim_lower <- function(str) {
 # a single synonym; ignore any DEs with no listed synonyms
 expand_syns <- function(cadsr_df) {
   cadsr_df %>%
-    dplyr::filter(!is.na(CDE_SYNONYMS_MACHINE),
-                  stringr::str_detect(CDE_SYNONYMS_MACHINE, "\\|")) %>% 
-    dplyr::select(CDE_ID, synonym = CDE_SYNONYMS_MACHINE) %>%
+    dplyr::filter(!is.na(CDE_SHORT_NAME),
+                  stringr::str_detect(CDE_SHORT_NAME, "\\|")) %>% 
+    dplyr::select(CDE_ID, synonym = CDE_SHORT_NAME) %>%
     dplyr::mutate(synonym = stringr::str_split(synonym, "\\|")) %>%
     tidyr::unnest(synonym) %>%
     dplyr::bind_rows(
       cadsr_df %>%
-        dplyr::filter(!is.na(CDE_SYNONYMS_MACHINE),
-                      !stringr::str_detect(CDE_SYNONYMS_MACHINE, "\\|")) %>% 
-        dplyr::select(CDE_ID, synonym = CDE_SYNONYMS_MACHINE)
+        dplyr::filter(!is.na(CDE_SHORT_NAME),
+                      !stringr::str_detect(CDE_SHORT_NAME, "\\|")) %>% 
+        dplyr::select(CDE_ID, synonym = CDE_SHORT_NAME)
     ) %>% 
     dplyr::mutate(synonym = str_trim_lower(synonym))
 }
@@ -120,8 +120,8 @@ collect_result_hv <- function(cadsr_df, de_id) {
   de_hit_df <- cadsr_df %>% 
     dplyr::filter(CDE_ID == de_id) %>% 
     dplyr::select(CDE_ID, CDE_LONG_NAME, DEC_ID, DEC_LONG_NAME, 
-                  OBJECT_CLASS_IDS, PROPERTY_IDS) %>% 
-    tidyr::unite(concepts, OBJECT_CLASS_IDS:PROPERTY_IDS, sep = "|", 
+                  OBJECT_CLASS_CONCEPTS, PROPERTY_CONCEPTS) %>% 
+    tidyr::unite(concepts, OBJECT_CLASS_CONCEPTS:PROPERTY_CONCEPTS, sep = "|", 
                  remove = TRUE) %>% 
     dplyr::mutate(concepts = stringr::str_split(concepts, "\\|"))
   
