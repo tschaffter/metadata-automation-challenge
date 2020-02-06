@@ -1,5 +1,5 @@
 # metadata-automation-challenge
-
+.
 
 ## Running the Validator
 
