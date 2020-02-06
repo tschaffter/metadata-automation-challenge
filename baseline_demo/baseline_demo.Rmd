@@ -38,9 +38,9 @@ I've chosen to use folders at the root of my system path to store various inputs
 You can change these paths as needed to point to other locations (including the current working directory).
 
 ```{r}
-input_dir <- "/input/"
-output_dir <- "/output/"
-data_dir <- "/data/"
+input_dir <- "./input/"
+output_dir <- "./output/"
+data_dir <- "./data/"
 user_data_dir <- "./"
 ```
 
@@ -381,7 +381,7 @@ collect_result_hv(cadsr_df, de_id) %>%
 
 
 ```{r, message=FALSE, warning=FALSE}
-collect_result_ov(cadsr_df, de_id, demo_col_ov, enum = is_enum_de) %>% 
+collect_result_vd(cadsr_df, de_id, demo_col_ov, enum = is_enum_de) %>% 
   head() %>% 
   jsonlite::toJSON(auto_unbox = TRUE, pretty = TRUE)
 ```
