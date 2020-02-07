@@ -22,15 +22,61 @@ docker run \
   metadata-baseline APOLLO-2
 ```
 
-where `APOLLO-2` is the name of the dataset in the folder `input` (without the extension `.tsv`).
+where `APOLLO-2` is the name of the dataset in the folder `input` (without the extension `.tsv`). Here `$(pwd)` is automatically replaced to the absolute path of the current directory.
 
 The file `/output/APOLLO-2-Submission.json` is created upon successful completion of the above command.
 
 ## Validating the submission file
+The following command checks that the format of the submission file generated is valid.
+
+```
+$ docker run \
+  -v $(pwd)/output/APOLLO-2-Submission.json:/input.json:ro \
+  docker.synapse.org/syn18065892/scoring_harness \
+  validate.py validate-input --json_filepath /input.json
+Your JSON file is valid!
+```
+
+where `$(pwd)/output/APOLLO-2-Submission.json` points to the location of the submission file generated in the previous section.
+
+Alternatively, the scoring script can be run directly using Python.
+
+```
+$ python3 -m venv venv
+$ pip install click jsonschema
+```
+
+Here is the generic command to validate the format of a submission file.
+
+```
+$ python schema/validate.py validate-input \
+  --json_filepath yourjson.json \
+  --schema_filepath schema/output-schema.json
+```
+
+To validate the submission file generate in the previous section, the command becomes:
+
+```
+$ python schema/validate.py validate-input \
+  --json_filepath output/APOLLO-2-Submission.json \
+  --schema_filepath schema/output-schema.json
+Your JSON file is valid!
+```
+
+## Scoring the submission
+Here we evaluate the performance of the submission by comparing the content of the submission file to a gold standard (e.g. manual annotations).
+
+```
+$ docker run \
+  -v $(pwd)/output/APOLLO-2-Submission.json:/submission.json:ro \
+  -v $(pwd)/data/Annotated-APOLLO-2.json:/goldstandard.json:ro \
+  -v $(pwd)/output/score.txt:/score.txt \
+  metadata-scoring submission.json goldstandard.json score.txt APOLLO-2
+```
 
 
 
-
+# Legacy
 ## Running the Validator
 
 Using Python:
